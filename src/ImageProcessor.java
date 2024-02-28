@@ -58,6 +58,27 @@ public class ImageProcessor {
     }
 
 
+    public void grayscale(){
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixel = image.getRGB(x, y);
+                int red = (pixel >> 16) & 0xff;
+                int green = (pixel >> 8) & 0xff;
+                int blue = pixel & 0xff;
+                // Calculate the gray value based on weighted averaging technique
+                // Using the formula 0.3 * red + 0.59 * green + 0.11 * blue
+                //   int gray = (int)(0.3 * red + 0.59 * green + 0.11 * blue);
+                // Calculate the gray value by simple averaging the red, green, and blue values
+                int gray = (red + green + blue) / 3;
+                // Combine the gray value into a single int representing the gray pixel
+                int newPixel = (gray << 16) | (gray << 8) | gray;
+                // Set the new pixel value at (x, y)
+                image.setRGB(x, y, newPixel);
+            }
+        }
+        display();
+    }
+
     public void display(){
         JFrame frame = new JFrame();
 
