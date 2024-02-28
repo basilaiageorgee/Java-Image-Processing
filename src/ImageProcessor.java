@@ -94,6 +94,54 @@ public class ImageProcessor {
 
     }
 
+    public void sepia(){
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int p = image.getRGB(x, y);
+
+                int a = (p>>24) & 0xff;
+                int r = (p>>16) & 0xff;
+                int g = (p>>8) & 0xff;
+                int b = p & 0xff;
+
+                // Sepia filter calculation
+                int tr = (int)(0.393 * r + 0.769 * g + 0.189 * b);
+                int tg = (int)(0.349 * r + 0.686 * g + 0.168 * b);
+                int tb = (int)(0.272 * r + 0.534 * g + 0.131 * b);
+
+                // ensuring the calculated values are within range
+                r = tr > 255 ? 255 : tr;
+                g = tg > 255 ? 255 : tg;
+                b = tb > 255 ? 255 : tb;
+
+                p = (a<<24) | (r<<16) | (g<<8) | b;
+                image.setRGB(x, y, p);
+            }
+        }
+        display();
+    }
+
+    public void binarize(int threshold){
+        BufferedImage thresholdedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int p = image.getRGB(x, y);
+                int r = (p >> 16) & 0xff;
+                int g = (p >> 8) & 0xff;
+                int b = p & 0xff;
+                int avg = (r + g + b) / 3;
+                if (avg > threshold) {
+                    // Set pixel to white
+                    thresholdedImage.setRGB(x, y, 0xffffff);
+                } else {
+                    // Set pixel to black
+                    thresholdedImage.setRGB(x, y, 0x000000);
+                }
+            }
+        }
+
+        display();
+    }
 
     public BufferedImage getImage() {
         return image;
